@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>GStreamer HLS Demo</title>
+  <!-- hls.js for cross-browser HLS playback -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+  <h1>GStreamer Live HLS</h1>
+  <video id="video" autoplay muted playsinline></video>
+
+  <script>
+    const video = document.getElementById('video');
+    const hlsUrl = '/hls/playlist.m3u8';
+
+    // If hls.js is supported (i.e. not Safari, or we want a standard solution)
+    if (Hls.isSupported()) {
+        // Provide Hls config to keep the player near the live edge
+        const hlsConfig = {
+            // Minimally buffer around 0 chunk near the live position
+            liveSyncDurationCount: 0,
+            // If we drift further behind than 1 segments, try to catch up
+            liveMaxLatencyDurationCount: 1,
+        };
+
+      const hls = new Hls(hlsConfig);
+    //   const hls = new Hls();
+      hls.loadSource(hlsUrl);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Safari has built-in HLS support
+      video.src = hlsUrl;
+      video.addEventListener('loadedmetadata', function () {
+        video.play();
+      });
+    } else {
+      alert('Your browser does not support HLS.');
+    }
+  </script>
+</body>
+</html>
