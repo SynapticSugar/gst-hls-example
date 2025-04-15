@@ -9,9 +9,9 @@ npm init -y
 npm install express   # For a web server
 
 ## Run the code
-node ./server.js <IPADDRESS>
+node ./server.js <IP_ADDRESS>
 
 ## Connect Webpage
-Use a browser to connect to http://<IPADDRESS>:9001
+Use a browser to connect to http://<IP_ADDRESS>:9001
 
 Note: Browsers should use the actual ETH0 IP address instead of 127.0.0.1 or localhost when served via Ubuntu WSL2
