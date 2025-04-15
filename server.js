@@ -3,6 +3,10 @@ const express = require('express');
 const path = require('path');
 const { spawn } = require('child_process');
 
+// Grab the host IP from process.argv (e.g., node server.js 192.168.1.100)
+// Default to '127.0.0.1' if not provided
+const hostIP = process.argv[2] || '127.0.0.1';
+
 // The folder where we'll store our HLS segments
 // Make sure this 'hls' folder exists before running!
 const hlsFolder = path.join(__dirname, 'hls');
@@ -22,7 +26,7 @@ app.get('/', (req, res) => {
 // 4. Start the server on port 9001
 const PORT = 9001;
 app.listen(PORT, () => {
-  console.log(`Server listening on http://172.26.253.159:${PORT}`);
+  console.log(`Server listening on http://${hostIP}:${PORT}`);
   // Once Express is running, spawn GStreamer
   startGStreamerHLS();
 });
@@ -58,7 +62,7 @@ function startGStreamerHLS() {
          'key-int-max=15', 'bitrate=5000',
     '!', 'mpegtsmux',
     '!', 'hlssink',
-         `playlist-root=http://172.26.253.159:${PORT}/hls`,
+         `playlist-root=http://${hostIP}:${PORT}/hls`,
          `location=${path.join(hlsFolder, 'segment_%05d.ts')}`,
          `playlist-location=${path.join(hlsFolder, 'playlist.m3u8')}`,
          'target-duration=1',
